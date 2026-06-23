@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XTA · Barra cobertura CP</title>
+<style>
+:root {
+  --yellow:#ffcc00;
+  --dark:#2f2f2f;
+  --green:#52a449;
+  --error:#b00020;
+  --ok:#1f7a35;
+}
+* { box-sizing:border-box; }
+html,body {
+  margin:0;
+  min-height:100%;
+  font-family:Arial, Helvetica, sans-serif;
+  color:#222;
+  background:#fff;
+}
+.top-line { height:6px; background:#3f3f3f; }
+.header {
+  height:136px;
+  padding:28px 44px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:28px;
+  background:#fff;
+  border-bottom:2px solid var(--green);
+}
+.logo { width:270px; max-width:30vw; height:auto; display:block; }
+.nav {
+  display:flex;
+  gap:30px;
+  align-items:center;
+  font-size:21px;
+  font-weight:700;
+  color:#444;
+  white-space:nowrap;
+}
+.phone {
+  text-align:center;
+  font-size:20px;
+  line-height:1.1;
+  font-weight:700;
+  white-space:nowrap;
+}
+.call {
+  background:var(--yellow);
+  border-radius:999px;
+  padding:16px 24px;
+  font-size:20px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.main-white {
+  min-height:calc(100vh - 136px - 290px);
+  background:#fff;
+}
+.form-zone {
+  background:var(--yellow);
+  padding:34px 38px 28px;
+}
+.form-grid {
+  max-width:1920px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:1.05fr 1.05fr 1fr 1.18fr 180px;
+  gap:28px;
+  align-items:end;
+}
+.field label {
+  display:block;
+  margin-bottom:12px;
+  font-size:21px;
+  font-weight:800;
+}
+.input-wrap { position:relative; }
+.input-wrap .ico {
+  position:absolute;
+  left:18px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:24px;
+  color:#333;
+  z-index:1;
+}
+input,select {
+  width:100%;
+  height:72px;
+  border:0;
+  border-radius:9px;
+  background:#fff;
+  padding:0 18px 0 58px;
+  font-size:20px;
+  color:#333;
+  box-shadow:0 1px 4px rgba(0,0,0,.10);
+}
+select { padding-left:54px; }
+input:focus,select:focus { outline:3px solid rgba(47,47,47,.20); }
+input.invalid,select.invalid { outline:3px solid rgba(176,0,32,.28); }
+input.valid,select.valid { outline:3px solid rgba(31,122,53,.26); }
+.submit {
+  height:72px;
+  border:0;
+  border-radius:9px;
+  background:#2f2f2f;
+  color:#fff;
+  font-size:22px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 2px 7px rgba(0,0,0,.20);
+}
+.submit.disabled {
+  background:#9a9a9a;
+  color:#e7e7e7;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+.message {
+  max-width:1320px;
+  margin:24px auto 0;
+  text-align:center;
+  font-size:20px;
+  font-weight:700;
+  color:#222;
+}
+.message.error { color:var(--error); }
+.message.ok { color:var(--ok); }
+
+.success-overlay {
+  position:fixed;
+  inset:0;
+  background:rgba(255,255,255,.94);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+}
+.success-card {
+  background:#fff;
+  border-radius:18px;
+  padding:46px 58px;
+  text-align:center;
+  box-shadow:0 14px 45px rgba(0,0,0,.22);
+  border-top:10px solid var(--yellow);
+  max-width:560px;
+}
+.success-icon {
+  width:78px;
+  height:78px;
+  border-radius:50%;
+  background:#1f7a35;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:46px;
+  font-weight:800;
+  margin:0 auto 20px;
+}
+.success-card h2 { margin:0 0 12px; font-size:34px; }
+.success-card p { margin:0; font-size:18px; color:#555; }
+
+@media(max-width:1400px) {
+  .nav { gap:18px; font-size:18px; }
+  .logo { width:220px; }
+}
+@media(max-width:1180px) {
+  .nav { display:none; }
+  .form-grid { grid-template-columns:1fr 1fr; }
+  .submit { grid-column:1/-1; }
+}
+@media(max-width:720px) {
+  .header { height:auto; padding:22px; }
+  .logo { width:220px; max-width:70vw; }
+  .phone,.call { display:none; }
+  .main-white { min-height:36vh; }
+  .form-zone { padding:26px 18px; }
+  .form-grid { grid-template-columns:1fr; gap:18px; }
+}
+</style>
+</head>
+<body>
+<div class="top-line"></div>
+
+<header class="header">
+  <img class="logo" src="data:image/png;base64,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" alt="XTA">
+  <nav class="nav">
+    <span>Fibra + Mòbil</span>
+    <span>Fibra Òptica</span>
+    <span>Telefonia Mòbil</span>
+    <span>Alarmes</span>
+    <span>Empreses</span>
+    <span>Botigues XTA</span>
+    <span>Zona XTA</span>
+  </nav>
+  <div class="phone">Truca’ns<br>93 897 52 00</div>
+  <div class="call">☎ Et truquem?</div>
+</header>
+
+<section class="main-white"></section>
+
+<section class="form-zone">
+  <div class="form-grid">
+    <div class="field">
+      <label for="nom">Nom</label>
+      <div class="input-wrap">
+        <span class="ico">♙</span>
+        <input id="nom" type="text" placeholder="El teu nom" autocomplete="name">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="telefon">Telèfon de contacte</label>
+      <div class="input-wrap">
+        <span class="ico">☏</span>
+        <input id="telefon" type="tel" placeholder="El teu telèfon" autocomplete="tel">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="cp">Codi postal</label>
+      <div class="input-wrap">
+        <span class="ico">⌖</span>
+        <input id="cp" type="text" maxlength="5" inputmode="numeric" placeholder="Ex: 08784">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="municipi">Municipi</label>
+      <div class="input-wrap">
+        <span class="ico">▦</span>
+        <select id="municipi" disabled>
+          <option value="">S’obtindrà automàticament</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="enviar" class="submit disabled" type="button">Enviar</button>
+  </div>
+
+  <div id="missatge" class="message">
+    Introdueix el nom, el telèfon i el codi postal.
+  </div>
+</section>
+
+<div id="successOverlay" class="success-overlay">
+  <div class="success-card">
+    <div class="success-icon">✓</div>
+    <h2>Missatge enviat</h2>
+    <p>Les dades s’han enviat correctament. El formulari es reiniciarà automàticament.</p>
+  </div>
+</div>
+
+<script>
+const dadesCP = {"08001": ["Barcelona"], "08002": ["Barcelona"], "08003": ["Barcelona"], "08004": ["Barcelona"], "08005": ["Barcelona"], "08006": ["Barcelona"], "08007": ["Barcelona"], "08008": ["Barcelona"], "08009": ["Barcelona"], "08010": ["Barcelona"], "08011": ["Barcelona"], "08012": ["Barcelona"], "08013": ["Barcelona"], "08014": ["Barcelona"], "08015": ["Barcelona"], "08016": ["Barcelona"], "08017": ["Barcelona"], "08018": ["Barcelona"], "08019": ["Barcelona"], "08020": ["Barcelona"], "08021": ["Barcelona"], "08022": ["Barcelona"], "08023": ["Barcelona"], "08024": ["Barcelona"], "08025": ["Barcelona"], "08026": ["Barcelona"], "08027": ["Barcelona"], "08028": ["Barcelona"], "08029": ["Barcelona"], "08030": ["Barcelona"], "08031": ["Barcelona"], "08032": ["Barcelona"], "08033": ["Barcelona"], "08034": ["Barcelona"], "08035": ["Barcelona"], "08036": ["Barcelona"], "08037": ["Barcelona"], "08038": ["Barcelona"], "08039": ["Barcelona"], "08040": ["Barcelona"], "08041": ["Barcelona"], "08042": ["Barcelona"], "08100": ["Mollet del Vallès"], "08104": ["Mollet del Vallès"], "08105": ["Sant Fost de Campsentelles"], "08106": ["Santa Maria de Martorelles"], "08107": ["Martorelles"], "08110": ["Montcada i Reixac"], "08120": ["La Llagosta"], "08130": ["Santa Perpètua de Mogoda"], "08140": ["Caldes de Montbui"], "08146": ["Gallifa"], "08148": ["L'Estany"], "08150": ["Parets del Vallès"], "08160": ["Montmeló"], "08170": ["Montornès del Vallès"], "08172": ["Sant Cugat del Vallès"], "08173": ["Sant Cugat del Vallès"], "08174": ["Sant Cugat del Vallès"], "08178": ["Collsuspina"], "08180": ["Moià"], "08181": ["Sentmenat"], "08182": ["Sant Feliu de Codines"], "08183": ["Castellcir", "Castellterçol", "Granera"], "08184": ["Palau-solità i Plegamans"], "08185": ["Lliçà de Vall"], "08186": ["Lliçà d'Amunt"], "08187": ["Santa Eulàlia de Ronçana"], "08188": ["Vallromanes"], "08189": ["Sant Quirze Safaja"], "08191": ["Rubí"], "08192": ["Sant Quirze del Vallès"], "08193": ["Cerdanyola del Vallès"], "08194": ["Sant Quirze del Vallès"], "08195": ["Sant Cugat del Vallès"], "08196": ["Sant Cugat del Vallès"], "08197": ["Sant Cugat del Vallès"], "08198": ["Sant Cugat del Vallès"], "08199": ["Monistrol de Montserrat", "Marganell"], "08201": ["Sabadell"], "08202": ["Sabadell"], "08203": ["Sabadell"], "08204": ["Sabadell"], "08205": ["Sabadell"], "08206": ["Sabadell"], "08207": ["Sabadell"], "08208": ["Sabadell"], "08210": ["Barberà del Vallès"], "08211": ["Castellar del Vallès"], "08212": ["Sant Llorenç Savall"], "08213": ["Polinyà"], "08214": ["Badia del Vallès"], "08221": ["Terrassa"], "08222": ["Terrassa"], "08223": ["Terrassa"], "08224": ["Terrassa"], "08225": ["Terrassa"], "08226": ["Terrassa"], "08227": ["Terrassa"], "08228": ["Terrassa"], "08230": ["Matadepera"], "08231": ["Ullastrell"], "08232": ["Viladecavalls"], "08233": ["Vacarisses"], "08240": ["Manresa"], "08241": ["Manresa"], "08242": ["Manresa"], "08243": ["Manresa"], "08250": ["Sant Joan de Vilatorrada"], "08251": ["Castellnou de Bages", "Santpedor"], "08253": ["Sant Salvador de Guardiola"], "08254": ["El Pont de Vilomara i Rocafort"], "08255": ["Castellfollit del Boix"], "08256": ["Aguilar de Segarra", "Rajadell"], "08259": ["Fonollosa"], "08260": ["Castellnou de Bages", "Súria"], "08261": ["Cardona"], "08262": ["Callús"], "08263": ["Sant Mateu de Bages"], "08269": ["Navàs", "Sant Mateu de Bages"], "08270": ["Navarcles"], "08271": ["Artés"], "08272": ["Sant Fruitós de Bages"], "08273": ["Santa Maria d'Oló"], "08274": ["Sant Feliu Sasserra"], "08275": ["Calders", "Monistrol de Calders"], "08278": ["Mura", "Talamanca"], "08279": ["Avinyó"], "08280": ["Calaf"], "08281": ["Aguilar de Segarra", "Calonge de Segarra", "Els Prats de Rei", "Sant Pere Sallavinera", "La Molsosa"], "08282": ["Pujalt", "Sant Martí Sesgueioles"], "08283": ["Castellfollit de Riubregós"], "08289": ["Copons", "Veciana"], "08290": ["Cerdanyola del Vallès"], "08291": ["Ripollet"], "08292": ["Esparreguera", "Els Hostalets de Pierola"], "08293": ["Collbató"], "08294": ["El Bruc", "Els Hostalets de Pierola"], "08295": ["Sant Vicenç de Castellet"], "08296": ["Castellbell i el Vilar"], "08297": ["Castellgalí"], "08298": ["Monistrol de Montserrat", "Marganell"], "08299": ["Rellinars"], "08301": ["Mataró"], "08302": ["Mataró"], "08303": ["Mataró"], "08304": ["Mataró"], "08310": ["Argentona"], "08317": ["Òrrius"], "08318": ["Dosrius"], "08319": ["Dosrius"], "08320": ["El Masnou"], "08328": ["Alella"], "08329": ["Teià"], "08330": ["Premià de Mar"], "08338": ["Premià de Dalt"], "08339": ["Vilassar de Dalt"], "08340": ["Vilassar de Mar"], "08348": ["Cabrils"], "08349": ["Cabrera de Mar"], "08350": ["Arenys de Mar"], "08358": ["Arenys de Munt"], "08359": ["Sant Iscle de Vallalta"], "08360": ["Canet de Mar"], "08370": ["Calella"], "08380": ["Malgrat de Mar"], "08389": ["Palafolls"], "08390": ["Montgat", "Tiana"], "08391": ["Tiana"], "08392": ["Sant Andreu de Llavaneres"], "08393": ["Caldes d'Estrac"], "08394": ["Sant Vicenç de Montalt"], "08395": ["Sant Pol de Mar"], "08396": ["Sant Cebrià de Vallalta", "Tordera"], "08397": ["Pineda de Mar"], "08398": ["Santa Susanna"], "08401": ["Granollers"], "08402": ["Granollers"], "08403": ["Granollers"], "08410": ["Vilanova del Vallès"], "08415": ["Bigues i Riells del Fai"], "08416": ["Bigues i Riells del Fai"], "08420": ["Canovelles"], "08430": ["La Roca del Vallès"], "08440": ["Cardedeu"], "08445": ["Cànoves i Samalús"], "08450": ["Llinars del Vallès"], "08455": ["Vilalba Sasserra"], "08458": ["Sant Pere de Vilamajor"], "08459": ["Sant Antoni de Vilamajor"], "08460": ["Santa Maria de Palautordera"], "08461": ["Sant Esteve de Palautordera"], "08469": ["Fogars de Montclús", "Montseny"], "08470": ["Sant Celoni"], "08471": ["Vallgorguina"], "08472": ["Campins"], "08474": ["Gualba"], "08476": ["Sant Celoni"], "08479": ["Fogars de Montclús"], "08480": ["L'Ametlla del Vallès"], "08490": ["Tordera"], "08495": ["Fogars de la Selva"], "08500": ["Vic"], "08503": ["Gurb", "Sant Bartomeu del Grau"], "08504": ["Sant Julià de Vilatorta", "Sant Sadurní d'Osormort"], "08505": ["Santa Eulàlia de Riuprimer", "Vic"], "08506": ["Calldetenes"], "08507": ["Santa Eugènia de Berga"], "08508": ["Les Masies de Voltregà"], "08509": ["Santa Cecília de Voltregà"], "08510": ["Les Masies de Roda", "Roda de Ter"], "08511": ["L'Esquirol", "Tavertet"], "08512": ["Sant Hipòlit de Voltregà"], "08513": ["Prats de Lluçanès"], "08514": ["Lluçà"], "08515": ["Olost", "Sant Martí d'Albars"], "08516": ["Olost"], "08517": ["Sagàs", "Santa Maria de Merlès"], "08518": ["Oristà"], "08519": ["Folgueroles", "Tavèrnoles", "Vilanova de Sau"], "08520": ["Les Franqueses del Vallès"], "08521": ["Les Franqueses del Vallès"], "08522": ["Malla"], "08529": ["Muntanyola"], "08530": ["La Garriga"], "08540": ["Centelles"], "08550": ["Balenyà"], "08551": ["Tona"], "08552": ["Taradell"], "08553": ["El Brull", "Seva"], "08554": ["Seva"], "08559": ["El Brull"], "08560": ["Manlleu"], "08569": ["L'Esquirol", "Rupit i Pruit"], "08570": ["Torelló"], "08571": ["Sant Vicenç de Torelló"], "08572": ["Sant Pere de Torelló"], "08573": ["Orís"], "08580": ["Sant Quirze de Besora"], "08584": ["Santa Maria de Besora"], "08585": ["Montesquiu"], "08586": ["Sant Agustí de Lluçanès"], "08587": ["Alpens"], "08588": ["Sora"], "08589": ["Perafita", "Sant Boi de Lluçanès", "Sobremunt"], "08590": ["El Figaró-Montmany"], "08591": ["Aiguafreda"], "08592": ["Sant Martí de Centelles"], "08593": ["Tagamanent"], "08600": ["Berga"], "08604": ["Castell de l'Areny"], "08605": ["Montclar"], "08606": ["La Quar"], "08607": ["Sant Jaume de Frontanyà"], "08610": ["Avià"], "08611": ["Avià", "Berga", "Olvan"], "08612": ["Montmajor"], "08613": ["Vilada"], "08614": ["L'Espunyola"], "08617": ["Capolat"], "08618": ["Castellar del Riu"], "08619": ["Borredà"], "08620": ["Sant Vicenç dels Horts"], "08629": ["Torrelles de Llobregat"], "08630": ["Abrera"], "08635": ["Sant Esteve Sesrovires"], "08640": ["Olesa de Montserrat"], "08650": ["Sallent"], "08660": ["Balsareny"], "08670": ["Navàs"], "08671": ["Navàs"], "08672": ["Gaià", "Puig-reig"], "08673": ["Viver i Serrateix"], "08680": ["Casserres", "Gironella"], "08690": ["Santa Coloma de Cervelló"], "08691": ["Monistrol de Montserrat"], "08692": ["Puig-reig"], "08693": ["Casserres"], "08694": ["Guardiola de Berguedà", "Sant Julià de Cerdanyola"], "08695": ["Bagà", "Gisclareny"], "08696": ["Castellar de n'Hug", "La Pobla de Lillet"], "08697": ["Saldes"], "08698": ["Fígols", "La Nou de Berguedà", "Cercs"], "08699": ["Vallcebre"], "08700": ["Igualada"], "08710": ["Santa Margarida de Montbui"], "08711": ["Òdena"], "08712": ["Igualada", "Sant Martí de Tous"], "08717": ["Argençola", "Montmaneu"], "08718": ["Cabrera d'Anoia"], "08719": ["Castellolí", "Jorba", "Rubió", "Veciana"], "08720": ["Vilafranca del Penedès"], "08729": ["Castellet i la Gornal"], "08730": ["Santa Margarida i els Monjos"], "08731": ["Sant Martí Sarroca"], "08732": ["Castellet i la Gornal", "Castellví de la Marca"], "08733": ["El Pla del Penedès"], "08734": ["Avinyonet del Penedès", "Olèrdola"], "08735": ["Vilobí del Penedès"], "08736": ["Font-rubí"], "08737": ["Torrelles de Foix"], "08738": ["Pontons"], "08739": ["Subirats"], "08740": ["Sant Andreu de la Barca"], "08750": ["Barcelona", "Molins de Rei"], "08753": ["Pallejà"], "08754": ["El Papiol"], "08755": ["Castellbisbal"], "08756": ["La Palma de Cervelló"], "08757": ["Corbera de Llobregat", "Gelida"], "08758": ["Cervelló", "Vallirana"], "08759": ["Vallirana"], "08760": ["Martorell"], "08769": ["Castellví de Rosanes"], "08770": ["Sant Sadurní d'Anoia"], "08773": ["Mediona"], "08775": ["Torrelavit"], "08776": ["Sant Pere de Riudebitlles"], "08777": ["Sant Quintí de Mediona"], "08779": ["La Llacuna"], "08780": ["Pallejà"], "08781": ["Els Hostalets de Pierola"], "08782": ["Masquefa"], "08783": ["Masquefa"], "08784": ["Piera"], "08785": ["Vallbona d'Anoia"], "08786": ["Capellades"], "08787": ["Carme", "Orpí", "La Pobla de Claramunt", "Santa Maria de Miralles"], "08788": ["Vilanova del Camí"], "08789": ["Carme", "La Torre de Claramunt"], "08790": ["Gelida"], "08791": ["Sant Llorenç d'Hortons"], "08792": ["Avinyonet del Penedès", "La Granada", "Santa Fe del Penedès"], "08793": ["Avinyonet del Penedès"], "08794": ["Les Cabanyes"], "08795": ["Olesa de Bonesvalls"], "08796": ["Pacs del Penedès"], "08797": ["Puigdàlber"], "08798": ["Avinyonet del Penedès", "Sant Cugat Sesgarrigues"], "08799": ["Olèrdola"], "08800": ["Vilanova i la Geltrú"], "08810": ["Sant Pere de Ribes"], "08811": ["Canyelles"], "08812": ["Sant Pere de Ribes"], "08818": ["Olivella"], "08820": ["El Prat de Llobregat"], "08830": ["Sant Boi de Llobregat"], "08840": ["Viladecans"], "08849": ["Sant Climent de Llobregat"], "08850": ["Gavà"], "08859": ["Begues"], "08860": ["Castelldefels", "Sitges"], "08870": ["Sitges"], "08871": ["Sitges"], "08880": ["Cubelles"], "08901": ["L'Hospitalet de Llobregat"], "08902": ["L'Hospitalet de Llobregat"], "08903": ["L'Hospitalet de Llobregat"], "08904": ["L'Hospitalet de Llobregat"], "08905": ["L'Hospitalet de Llobregat"], "08906": ["L'Hospitalet de Llobregat"], "08907": ["L'Hospitalet de Llobregat"], "08908": ["L'Hospitalet de Llobregat"], "08911": ["Badalona"], "08912": ["Badalona"], "08913": ["Badalona"], "08914": ["Badalona"], "08915": ["Badalona"], "08916": ["Badalona", "Tiana"], "08917": ["Badalona"], "08918": ["Badalona"], "08921": ["Santa Coloma de Gramenet"], "08922": ["Santa Coloma de Gramenet"], "08923": ["Santa Coloma de Gramenet"], "08924": ["Santa Coloma de Gramenet"], "08930": ["Sant Adrià de Besòs"], "08940": ["Cornellà de Llobregat"], "08950": ["Esplugues de Llobregat"], "08960": ["Sant Just Desvern"], "08970": ["Sant Joan Despí"], "08980": ["Sant Feliu de Llobregat"], "17001": ["Girona"], "17002": ["Girona"], "17003": ["Girona"], "17004": ["Girona"], "17005": ["Girona"], "17006": ["Girona"], "17007": ["Girona"], "17100": ["La Bisbal d'Empordà"], "17110": ["Vulpellac, Fonteta i Peratallada"], "17111": ["Vulpellac, Fonteta i Peratallada"], "17113": ["Vulpellac, Fonteta i Peratallada"], "17114": ["Ullastret"], "17115": ["La Bisbal d'Empordà"], "17116": ["Cruïlles, Monells i Sant Sadurní de l'Heura"], "17117": ["Cruïlles, Monells i Sant Sadurní de l'Heura"], "17118": ["Cruïlles, Monells i Sant Sadurní de l'Heura"], "17120": ["Corçà", "La Pera"], "17121": ["Corçà", "Cruïlles, Monells i Sant Sadurní de l'Heura"], "17123": ["Torrent"], "17124": ["Palafrugell"], "17130": ["L'Escala", "Torroella de Montgrí"], "17131": ["Rupià"], "17132": ["Foixà"], "17133": ["Foixà", "Parlavà", "Serra de Daró", "Ultramort"], "17134": ["La Tallada d'Empordà"], "17136": ["Albons"], "17137": ["Ventalló", "Viladamat"], "17140": ["Ullà"], "17141": ["Bellcaire d'Empordà", "Torroella de Montgrí"], "17142": ["Verges"], "17143": ["Jafre"], "17144": ["Colomers"], "17150": ["Sant Gregori"], "17151": ["Sant Gregori"], "17152": ["Sant Martí de Llémena"], "17153": ["Sant Martí de Llémena"], "17154": ["Sant Aniol de Finestres"], "17160": ["Anglès"], "17161": ["Osor"], "17162": ["Bescanó"], "17164": ["Sant Gregori", "Sant Martí de Llémena", "Sant Julià del Llor i Bonmatí"], "17165": ["La Cellera de Ter"], "17166": ["La Cellera de Ter", "Susqueda"], "17170": ["Amer"], "17171": ["Susqueda"], "17172": ["Les Planes d'Hostoles"], "17173": ["Les Planes d'Hostoles"], "17174": ["Sant Feliu de Pallerols"], "17175": ["Sant Feliu de Pallerols"], "17176": ["La Vall d'en Bas"], "17177": ["La Vall d'en Bas"], "17178": ["Les Preses", "La Vall d'en Bas"], "17179": ["Riudaura", "La Vall d'en Bas"], "17180": ["Vilablareix"], "17181": ["Aiguaviva"], "17182": ["Bescanó"], "17183": ["Vilobí d'Onyar"], "17184": ["Vilobí d'Onyar"], "17185": ["Vilobí d'Onyar"], "17190": ["Salt"], "17199": ["Canet d'Adri", "Sant Gregori"], "17200": ["Palafrugell"], "17210": ["Palafrugell"], "17211": ["Palafrugell"], "17212": ["Palafrugell"], "17213": ["Begur"], "17214": ["Regencós"], "17220": ["Sant Feliu de Guíxols"], "17230": ["Palamós"], "17240": ["Llagostera", "Santa Cristina d'Aro"], "17241": ["Quart"], "17242": ["Quart"], "17243": ["Llambilles"], "17244": ["Cassà de la Selva", "Cruïlles, Monells i Sant Sadurní de l'Heura"], "17245": ["Santa Cristina d'Aro"], "17246": ["Santa Cristina d'Aro"], "17248": ["Castell d'Aro, Platja d'Aro i s'Agaró", "Sant Feliu de Guíxols"], "17249": ["Castell d'Aro, Platja d'Aro i s'Agaró"], "17250": ["Castell d'Aro, Platja d'Aro i s'Agaró"], "17251": ["Calonge i Sant Antoni"], "17252": ["Calonge i Sant Antoni"], "17253": ["Mont-ras", "Vall-llobrega"], "17255": ["Begur"], "17256": ["Palau-sator", "Pals"], "17257": ["Fontanilles", "Gualta", "Torroella de Montgrí"], "17258": ["Torroella de Montgrí"], "17300": ["Blanes"], "17310": ["Lloret de Mar"], "17320": ["Tossa de Mar"], "17400": ["Breda"], "17401": ["Arbúcies"], "17402": ["Arbúcies"], "17403": ["Sant Hilari Sacalm"], "17404": ["Arbúcies", "Riells i Viabrea"], "17405": ["Espinelves"], "17406": ["Viladrau"], "17410": ["Sils"], "17411": ["Vidreres"], "17412": ["Maçanet de la Selva"], "17420": ["Riudarenes"], "17421": ["Riudarenes"], "17430": ["Santa Coloma de Farners"], "17441": ["Brunyola i Sant Martí Sapresa"], "17442": ["Osor"], "17443": ["Santa Coloma de Farners"], "17444": ["Santa Coloma de Farners"], "17445": ["Santa Coloma de Farners"], "17450": ["Hostalric"], "17451": ["Sant Feliu de Buixalleu"], "17452": ["Maçanes"], "17453": ["Maçanet de la Selva"], "17454": ["Sant Andreu Salou"], "17455": ["Caldes de Malavella"], "17456": ["Caldes de Malavella"], "17457": ["Riudellots de la Selva"], "17458": ["Fornells de la Selva"], "17459": ["Campllong"], "17460": ["Celrà"], "17461": ["Girona"], "17462": ["Bordils", "Juià", "Madremanya", "Sant Martí Vell"], "17463": ["Flaçà", "Foixà", "Sant Joan de Mollet"], "17464": ["Cervià de Ter", "Sant Jordi Desvalls", "Viladasens"], "17465": ["Saus, Camallera i Llampaies"], "17466": ["Garrigoles", "Vilopriu"], "17467": ["Sant Mori", "Saus, Camallera i Llampaies"], "17468": ["Bàscara", "Vilademuls"], "17469": ["El Far d'Empordà", "Siurana", "Fortià", "Riumors", "Vilamalla"], "17470": ["Sant Pere Pescador"], "17472": ["L'Armentera", "Ventalló"], "17473": ["Ventalló"], "17474": ["Torroella de Fluvià", "Vilamacolum"], "17475": ["Sant Miquel de Fluvià", "Ventalló"], "17476": ["Garrigàs", "Palau de Santa Eulàlia"], "17480": ["Roses"], "17481": ["Sant Julià de Ramis"], "17482": ["Sant Julià de Ramis"], "17483": ["Bàscara", "Vilaür"], "17484": ["Figueres"], "17485": ["Vila-sacra"], "17486": ["Castelló d'Empúries"], "17487": ["Castelló d'Empúries"], "17488": ["Cadaqués"], "17489": ["El Port de la Selva", "La Selva de Mar"], "17490": ["Llançà"], "17491": ["Peralada"], "17492": ["Peralada"], "17493": ["Pedret i Marzà", "Vilajuïga"], "17494": ["Pau"], "17495": ["Palau-saverdera"], "17496": ["Colera"], "17497": ["Portbou"], "17500": ["Ripoll"], "17510": ["Ripoll"], "17512": ["Les Llosses"], "17513": ["Les Llosses"], "17514": ["Les Llosses"], "17515": ["Vidrà"], "17520": ["Puigcerdà"], "17527": ["Llívia"], "17528": ["Guils de Cerdanya"], "17529": ["Puigcerdà"], "17530": ["Campdevànol"], "17531": ["Campdevànol", "Gombrèn"], "17532": ["Les Llosses"], "17533": ["Ribes de Freser"], "17534": ["Campelles", "Queralbs", "Pardines", "Ribes de Freser"], "17535": ["Planoles"], "17536": ["Planoles", "Toses"], "17537": ["Alp"], "17538": ["Alp", "Das", "Fontanals de Cerdanya", "Urús"], "17539": ["Bolvir", "Ger", "Isòvol", "Meranges"], "17600": ["Figueres"], "17700": ["La Jonquera"], "17706": ["Pont de Molins"], "17707": ["Agullana", "La Vajol"], "17708": ["Cantallops", "La Jonquera"], "17709": ["La Jonquera"], "17720": ["Maçanet de Cabrenys"], "17721": ["Maçanet de Cabrenys"], "17722": ["Darnius"], "17723": ["Boadella i les Escaules", "Biure"], "17730": ["Llers"], "17731": ["Terrades"], "17732": ["Sant Llorenç de la Muga"], "17733": ["Albanyà"], "17734": ["Albanyà"], "17740": ["Vilafant"], "17741": ["Cistella"], "17742": ["Avinyonet de Puigventós"], "17743": ["Vilanant"], "17744": ["Navata"], "17745": ["Lledó"], "17746": ["Cabanelles"], "17747": ["Cabanelles"], "17750": ["Campmany"], "17751": ["Sant Climent Sescebes"], "17752": ["Mollet de Peralada"], "17753": ["Espolla"], "17754": ["Rabós"], "17755": ["Rabós"], "17760": ["Vilabertran"], "17761": ["Cabanes"], "17762": ["Masarac i Vilarnadal"], "17763": ["Masarac i Vilarnadal"], "17770": ["Borrassà"], "17771": ["Santa Llogaia d'Àlguema"], "17772": ["Ordis"], "17773": ["Garrigàs", "Pontós"], "17780": ["Garriguella"], "17781": ["Vilamaniscle"], "17800": ["Olot"], "17810": ["Olot"], "17811": ["Santa Pau"], "17812": ["Olot"], "17813": ["La Vall de Bianya"], "17820": ["Banyoles"], "17830": ["Mieres", "Sant Ferriol", "Sant Miquel de Campmajor"], "17831": ["Sant Miquel de Campmajor"], "17832": ["Crespià", "Esponellà"], "17833": ["Fontcoberta", "Vilademuls"], "17834": ["Camós", "Porqueres"], "17840": ["Sarrià de Ter"], "17843": ["Canet d'Adri", "Palol de Revardit"], "17844": ["Cornellà del Terri"], "17845": ["Cornellà del Terri"], "17846": ["Porqueres"], "17850": ["Besalú", "Beuda", "Sant Ferriol"], "17851": ["Beuda", "Maià de Montcal"], "17852": ["Serinyà"], "17853": ["Argelaguer", "Sales de Llierca", "Tortellà"], "17854": ["Sant Jaume de Llierca"], "17855": ["Montagut i Oix"], "17856": ["Castellfollit de la Roca", "Montagut i Oix"], "17857": ["Sant Joan les Fonts"], "17858": ["La Vall de Bianya"], "17860": ["Sant Joan de les Abadesses"], "17861": ["Ogassa"], "17862": ["Vallfogona de Ripollès"], "17863": ["Ripoll"], "17864": ["Sant Pau de Segúries"], "17865": ["Sant Pau de Segúries"], "17866": ["Camprodon"], "17867": ["Camprodon"], "17868": ["Molló"], "17869": ["Llanars", "Setcases", "Vilallonga de Ter"], "22583": ["Tremp"], "22584": ["Tremp"], "25001": ["Lleida"], "25002": ["Lleida"], "25003": ["Lleida"], "25004": ["Lleida"], "25005": ["Lleida"], "25006": ["Lleida"], "25007": ["Lleida"], "25008": ["Lleida"], "25100": ["Almacelles"], "25109": ["Almacelles"], "25110": ["Alpicat", "Lleida", "Torrefarrera"], "25111": ["Lleida"], "25112": ["Gimenells i el Pla de la Font"], "25113": ["Lleida"], "25114": ["Gimenells i el Pla de la Font"], "25120": ["Alfarràs"], "25121": ["Alfarràs"], "25122": ["Ivars de Noguera"], "25123": ["Torrefarrera"], "25124": ["Rosselló"], "25125": ["Alguaire"], "25126": ["Almenar"], "25130": ["Algerri"], "25131": ["Torre-serona"], "25132": ["Benavent de Segrià"], "25133": ["Vilanova de Segrià"], "25134": ["La Portella"], "25135": ["Albesa"], "25136": ["Castelló de Farfanya"], "25137": ["Corbins"], "25138": ["Torrelameu"], "25139": ["Menàrguens"], "25140": ["Arbeca"], "25141": ["Torregrossa"], "25142": ["Bellvís"], "25143": ["El Poal"], "25144": ["Bellvís"], "25150": ["Artesa de Lleida"], "25151": ["Aspa"], "25152": ["El Cogul"], "25153": ["Puigverd de Lleida"], "25154": ["Castelldans"], "25155": ["L'Albagés"], "25160": ["Granyena de les Garrigues"], "25161": ["Alfés"], "25162": ["Alcanó"], "25163": ["El Soleràs"], "25164": ["Els Torms"], "25165": ["Juncosa"], "25170": ["Torres de Segre"], "25171": ["Albatàrrec"], "25172": ["Montoliu de Lleida"], "25173": ["Sudanell"], "25174": ["Sunyer"], "25175": ["Sarroca de Lleida"], "25176": ["Torrebesses"], "25177": ["La Granadella", "Bellaguarda"], "25178": ["Bovera"], "25179": ["Maials"], "25180": ["Alcarràs"], "25181": ["Soses"], "25182": ["Aitona"], "25183": ["Seròs"], "25184": ["Massalcoreig"], "25185": ["La Granja d'Escarp"], "25186": ["Llardecans"], "25187": ["Almatret"], "25191": ["Lleida"], "25192": ["Lleida"], "25193": ["Alcarràs", "Lleida"], "25194": ["Lleida"], "25195": ["Lleida"], "25196": ["Lleida"], "25197": ["Lleida"], "25198": ["Lleida"], "25199": ["Lleida"], "25200": ["Cervera"], "25210": ["Guissona"], "25211": ["Guissona", "Massoteres", "Sant Guim de la Plana", "Tarroja de Segarra", "Torrefeta i Florejacs", "Els Plans de Sió"], "25212": ["Els Plans de Sió"], "25213": ["Cervera", "Talavera", "Ribera d'Ondara"], "25214": ["Cervera", "Estaràs", "Les Oluges"], "25215": ["Estaràs", "Sant Ramon"], "25216": ["Estaràs", "Ivorra", "Sant Ramon"], "25217": ["Granyena de Segarra", "Montoliu de Segarra", "Ribera d'Ondara"], "25218": ["Cervera", "Granyanella", "Els Plans de Sió"], "25220": ["Bell-lloc d'Urgell"], "25221": ["Els Alamús"], "25222": ["Sidamon"], "25230": ["Mollerussa"], "25240": ["Linyola"], "25241": ["Golmés"], "25242": ["Miralcamp"], "25243": ["El Palau d'Anglesola"], "25244": ["Fondarella"], "25245": ["Vila-sana"], "25250": ["Bellpuig"], "25260": ["Ivars d'Urgell"], "25261": ["Ivars d'Urgell", "Penelles"], "25262": ["Anglesola", "Barbens", "Bellpuig"], "25263": ["Preixana"], "25264": ["Vilanova de Bellpuig"], "25265": ["Castellnou de Seana"], "25266": ["Belianes", "Maldà"], "25267": ["Sant Martí de Riucorb"], "25268": ["Els Omells de na Gaia", "Vallbona de les Monges"], "25269": ["Vallbona de les Monges"], "25270": ["Sant Guim de Freixenet"], "25271": ["Estaràs", "Sant Guim de Freixenet", "Ribera d'Ondara"], "25280": ["Olius", "Solsona"], "25281": ["Llobera"], "25282": ["Sant Llorenç de Morunys"], "25283": ["Lladurs", "Odèn"], "25284": ["La Coma i la Pedra"], "25285": ["Guixers"], "25286": ["Navès", "Olius", "Pinell de Solsonès"], "25287": ["Olius", "Pinós", "Riner"], "25288": ["Lladurs"], "25289": ["Bassella", "Castellar de la Ribera"], "25290": ["Clariana de Cardener", "Riner"], "25300": ["Tàrrega"], "25310": ["Agramunt"], "25315": ["Montgai"], "25316": ["Preixens"], "25317": ["Agramunt"], "25318": ["Agramunt", "Oliola", "Ossó de Sió", "Puigverd d'Agramunt"], "25320": ["Anglesola"], "25330": ["Vilagrassa"], "25331": ["Agramunt", "Tornabous"], "25332": ["La Fuliola"], "25333": ["Penelles"], "25334": ["Castellserà"], "25335": ["Penelles"], "25336": ["Bellmunt d'Urgell"], "25337": ["Bellcaire d'Urgell"], "25340": ["Montornès de Segarra", "Verdú"], "25341": ["Ciutadilla", "Guimerà", "Nalec"], "25343": ["Sant Martí de Riucorb"], "25344": ["Sant Martí de Riucorb"], "25350": ["Tàrrega"], "25351": ["Tàrrega"], "25352": ["Tàrrega"], "25353": ["Tàrrega"], "25354": ["Tàrrega"], "25360": ["Tàrrega"], "25400": ["Les Borges Blanques"], "25410": ["L'Espluga Calba"], "25411": ["Fulleda"], "25412": ["Els Omellons"], "25413": ["La Floresta"], "25420": ["Puiggròs"], "25430": ["Juneda"], "25440": ["Vinaixa"], "25450": ["L'Albi"], "25457": ["El Vilosell"], "25460": ["Cervià de les Garrigues"], "25471": ["La Pobla de Cérvoles"], "25480": ["Tarrés"], "25500": ["La Pobla de Segur"], "25510": ["La Torre de Cabdella"], "25511": ["La Torre de Cabdella"], "25512": ["La Torre de Cabdella"], "25513": ["Baix Pallars", "La Pobla de Segur", "La Torre de Cabdella"], "25514": ["El Pont de Suert", "Senterada"], "25515": ["La Torre de Cabdella"], "25516": ["Conca de Dalt", "La Pobla de Segur"], "25517": ["Conca de Dalt"], "25518": ["Conca de Dalt"], "25520": ["El Pont de Suert"], "25526": ["La Vall de Boí", "El Pont de Suert"], "25527": ["La Vall de Boí"], "25528": ["La Vall de Boí"], "25529": ["El Pont de Suert"], "25530": ["Vielha e Mijaran"], "25537": ["Vielha e Mijaran"], "25538": ["Vielha e Mijaran"], "25539": ["Naut Aran", "Vielha e Mijaran"], "25540": ["Les"], "25548": ["Canejan"], "25549": ["Bausen", "Canejan"], "25550": ["Bossòst"], "25551": ["Arres", "Es Bòrdes", "Vilamòs"], "25552": ["El Pont de Suert", "Vilaller"], "25553": ["Vilaller"], "25554": ["El Pont de Suert"], "25555": ["El Pont de Suert", "Sarroca de Bellera", "Senterada"], "25556": ["El Pont de Suert"], "25560": ["Sort"], "25566": ["Soriguera"], "25567": ["Sort"], "25568": ["Sort"], "25569": ["Soriguera", "Sort"], "25570": ["Vall de Cardós"], "25571": ["Esterri de Cardós", "Lladorre", "Vall de Cardós"], "25572": ["Vall de Cardós"], "25573": ["Alins"], "25574": ["Alins"], "25575": ["Alins"], "25576": ["Lladorre", "Vall de Cardós"], "25577": ["Lladorre"], "25580": ["Esterri d'Àneu"], "25586": ["Alt Àneu"], "25587": ["Alt Àneu"], "25588": ["La Guingueta d'Àneu"], "25589": ["Alt Àneu"], "25590": ["Baix Pallars"], "25591": ["Baix Pallars"], "25592": ["Baix Pallars"], "25593": ["Soriguera"], "25594": ["Llavorsí", "Rialb"], "25595": ["Farrera", "Llavorsí", "Tírvia", "La Guingueta d'Àneu"], "25596": ["La Guingueta d'Àneu"], "25597": ["Espot", "La Guingueta d'Àneu"], "25598": ["Naut Aran"], "25599": ["Naut Aran"], "25600": ["Balaguer"], "25610": ["Os de Balaguer"], "25611": ["Àger", "Les Avellanes i Santa Linya", "Os de Balaguer"], "25612": ["Les Avellanes i Santa Linya", "Os de Balaguer"], "25613": ["Camarasa"], "25614": ["Os de Balaguer"], "25615": ["Camarasa"], "25616": ["Montgai"], "25617": ["La Sentiu de Sió", "Vallfogona de Balaguer"], "25620": ["Tremp"], "25630": ["Talarn"], "25631": ["Castell de Mur"], "25632": ["Sant Esteve de la Sarga", "Castell de Mur"], "25633": ["Tremp", "Castell de Mur"], "25634": ["Tremp", "Castell de Mur"], "25635": ["Tremp"], "25636": ["Tremp"], "25637": ["Tremp"], "25638": ["Gavet de la Conca", "Llimiana"], "25639": ["Gavet de la Conca", "Llimiana"], "25640": ["Talarn", "Tremp"], "25650": ["Isona i Conca Dellà"], "25651": ["Abella de la Conca", "Isona i Conca Dellà"], "25652": ["Abella de la Conca"], "25653": ["Isona i Conca Dellà"], "25654": ["Tremp"], "25655": ["Isona i Conca Dellà"], "25656": ["Isona i Conca Dellà"], "25657": ["Isona i Conca Dellà"], "25658": ["Isona i Conca Dellà"], "25660": ["Alcoletge"], "25670": ["Térmens"], "25680": ["Vallfogona de Balaguer"], "25690": ["Vilanova de la Barca"], "25691": ["Àger"], "25692": ["Àger", "Camarasa"], "25693": ["Conca de Dalt", "Salàs de Pallars"], "25700": ["La Seu d'Urgell", "Les Valls de Valira"], "25710": ["La Seu d'Urgell"], "25711": ["Montferrer i Castellbò"], "25712": ["Montferrer i Castellbò"], "25713": ["Ribera d'Urgellet"], "25714": ["Montferrer i Castellbò", "Ribera d'Urgellet", "Les Valls d'Aguilar"], "25715": ["Alàs i Cerc"], "25716": ["Gósol"], "25717": ["Alàs i Cerc", "La Vansa i Fórnols", "Josa i Tuixén"], "25718": ["Alàs i Cerc"], "25719": ["Estamariu", "Les Valls de Valira"], "25720": ["Bellver de Cerdanya"], "25721": ["Bellver de Cerdanya", "Prats i Sansor", "Riu de Cerdanya"], "25722": ["El Pont de Bar", "Arsèguel", "Cava"], "25723": ["El Pont de Bar", "Cava"], "25724": ["Bellver de Cerdanya", "Montellà i Martinet"], "25725": ["Montellà i Martinet"], "25726": ["Lles de Cerdanya"], "25727": ["Prullans"], "25730": ["Artesa de Segre"], "25735": ["Vilanova de Meià"], "25736": ["Artesa de Segre", "Vilanova de Meià"], "25737": ["Alòs de Balaguer", "Artesa de Segre", "Cubells", "Foradada"], "25738": ["Artesa de Segre", "Vilanova de Meià"], "25739": ["Artesa de Segre"], "25740": ["Ponts"], "25746": ["Ponts"], "25747": ["La Baronia de Rialb"], "25748": ["Cabanabona", "Oliola", "Vilanova de l'Aguda"], "25749": ["Oliola", "Ponts", "Vilanova de l'Aguda"], "25750": ["Torà"], "25751": ["Torà"], "25752": ["Biosca"], "25753": ["Biosca", "Sanaüja"], "25788": ["Les Valls de Valira"], "25790": ["Odèn", "Oliana", "Peramola"], "25791": ["Tiurana"], "25792": ["Bassella"], "25793": ["Coll de Nargó"], "25794": ["Cabó", "Coll de Nargó", "Organyà", "Fígols i Alinyà"], "25795": ["Montferrer i Castellbò", "Ribera d'Urgellet", "Les Valls d'Aguilar"], "25796": ["Ribera d'Urgellet"], "25797": ["Ribera d'Urgellet"], "25798": ["Les Valls de Valira"], "25799": ["Les Valls de Valira"], "43001": ["Tarragona"], "43002": ["Tarragona"], "43003": ["Tarragona"], "43004": ["Tarragona"], "43005": ["Tarragona"], "43006": ["Tarragona", "La Canonja"], "43007": ["Tarragona"], "43008": ["Tarragona"], "43100": ["Tarragona", "La Canonja"], "43110": ["La Canonja"], "43120": ["Constantí"], "43130": ["Tarragona"], "43140": ["La Pobla de Mafumet"], "43141": ["Vilallonga del Camp"], "43142": ["El Rourell"], "43143": ["La Masó", "El Milà"], "43144": ["Vallmoll"], "43150": ["El Catllar"], "43151": ["Els Pallaresos"], "43152": ["Perafort"], "43153": ["Els Garidells"], "43154": ["La Secuita"], "43155": ["Perafort"], "43201": ["Reus"], "43202": ["Reus"], "43203": ["Reus"], "43204": ["Reus"], "43205": ["Reus"], "43206": ["Reus"], "43300": ["Mont-roig del Camp"], "43310": ["Colldejou"], "43311": ["Vilanova d'Escornalbou"], "43312": ["Vilanova d'Escornalbou"], "43320": ["Pratdip", "Tivissa"], "43321": ["Pratdip"], "43330": ["Riudoms"], "43340": ["Montbrió del Camp"], "43350": ["Les Borges del Camp"], "43360": ["Cornudella de Montsant"], "43361": ["La Morera de Montsant"], "43362": ["Cornudella de Montsant"], "43363": ["Ulldemolins"], "43364": ["Capafonts", "La Febró", "Mont-ral", "Prades"], "43365": ["Alforja", "Arbolí"], "43370": ["La Palma d'Ebre"], "43371": ["Margalef"], "43372": ["La Bisbal de Montsant"], "43373": ["Cabassers"], "43374": ["La Vilella Baixa"], "43375": ["La Vilella Alta"], "43376": ["Poboleda"], "43379": ["La Morera de Montsant"], "43380": ["Vilaplana"], "43381": ["L'Aleixar"], "43382": ["Maspujols"], "43390": ["Riudecols"], "43391": ["Vinyols i els Arcs"], "43392": ["Castellvell del Camp"], "43393": ["Almoster"], "43400": ["Montblanc"], "43410": ["Montblanc"], "43411": ["Blancafort"], "43412": ["Solivella"], "43413": ["Passanant i Belltall"], "43414": ["Montblanc"], "43415": ["Montblanc"], "43420": ["Santa Coloma de Queralt"], "43421": ["Bellprat", "Pontils"], "43422": ["Barberà de la Conca"], "43423": ["Pira"], "43424": ["Sarral"], "43425": ["Forès", "Passanant i Belltall", "Sarral"], "43426": ["Rocafort de Queralt"], "43427": ["Conesa", "Llorac", "Savallà del Comtat", "Vallfogona de Riucorb"], "43428": ["Les Piles", "Pontils", "Sarral"], "43429": ["Les Piles", "Santa Coloma de Queralt"], "43430": ["Vimbodí i Poblet"], "43439": ["Vallclara", "Vilanova de Prades"], "43440": ["L'Espluga de Francolí"], "43448": ["Vimbodí i Poblet"], "43449": ["Senan"], "43450": ["La Riba"], "43459": ["Montblanc", "Mont-ral"], "43460": ["Alcover"], "43461": ["Alcover"], "43470": ["La Selva del Camp"], "43479": ["L'Albiol"], "43480": ["Vila-seca"], "43481": ["Vila-seca"], "43490": ["Vilaverd"], "43491": ["Valls"], "43500": ["Tortosa"], "43510": ["Tortosa"], "43511": ["Tivenys"], "43512": ["Benifallet"], "43513": ["Rasquera"], "43514": ["Mas de Barberans"], "43515": ["La Galera"], "43516": ["Godall"], "43517": ["Tortosa"], "43519": ["El Perelló"], "43520": ["Roquetes"], "43527": ["Tortosa"], "43528": ["Alfara de Carles"], "43529": ["Roquetes"], "43530": ["Alcanar"], "43540": ["La Ràpita"], "43548": ["La Ràpita"], "43549": ["Amposta"], "43550": ["Ulldecona"], "43558": ["Freginals", "Ulldecona"], "43559": ["Ulldecona"], "43560": ["La Sénia"], "43569": ["Alcanar"], "43570": ["Santa Bàrbara"], "43580": ["Deltebre"], "43590": ["Tortosa"], "43591": ["Aldover"], "43592": ["Xerta"], "43593": ["Paüls"], "43594": ["El Pinell de Brai"], "43595": ["Prat de Comte"], "43596": ["Horta de Sant Joan"], "43597": ["Arnes"], "43700": ["El Vendrell"], "43710": ["Santa Oliva"], "43711": ["Banyeres del Penedès", "Llorenç del Penedès"], "43712": ["Llorenç del Penedès"], "43713": ["Sant Jaume dels Domenys"], "43714": ["Aiguamúrcia", "El Montmell"], "43715": ["Querol"], "43716": ["Albinyana"], "43717": ["La Bisbal del Penedès"], "43718": ["Masllorenç", "El Montmell"], "43719": ["Bellvei"], "43720": ["L'Arboç"], "43730": ["Falset"], "43736": ["La Figuera", "El Masroig", "El Molar"], "43737": ["Gratallops", "El Lloar", "Torroja del Priorat"], "43738": ["Bellmunt del Priorat"], "43739": ["Porrera"], "43740": ["Móra d'Ebre"], "43746": ["Tivissa"], "43747": ["Benissanet", "Miravet"], "43748": ["Ginestar"], "43749": ["Garcia"], "43750": ["Flix"], "43760": ["El Morell"], "43761": ["La Pobla de Montornès"], "43762": ["La Riera de Gaià"], "43763": ["La Nou de Gaià", "Vespella de Gaià"], "43764": ["El Catllar"], "43765": ["La Secuita"], "43770": ["Móra la Nova"], "43771": ["Riudecanyes"], "43772": ["Botarell"], "43773": ["L'Argentera", "Duesaigües"], "43774": ["Pradell de la Teixeta", "La Torre de Fontaubella"], "43775": ["Marçà"], "43776": ["Capçanes"], "43777": ["Els Guiamets"], "43780": ["Gandesa"], "43781": ["La Fatarella"], "43782": ["Vilalba dels Arcs"], "43783": ["La Pobla de Massaluca"], "43784": ["Corbera d'Ebre"], "43785": ["Bot"], "43786": ["Batea"], "43787": ["Caseres"], "43790": ["Riba-roja d'Ebre"], "43791": ["Ascó"], "43792": ["La Torre de l'Espanyol", "Vinebre"], "43800": ["Valls"], "43810": ["El Pla de Santa Maria"], "43811": ["Cabra del Camp", "Figuerola del Camp"], "43812": ["Bràfim", "Montferri", "El Montmell", "Puigpelat", "Rodonyà"], "43813": ["Alió", "Figuerola del Camp", "Valls"], "43814": ["Vila-rodona"], "43815": ["Aiguamúrcia"], "43816": ["Querol"], "43817": ["El Pont d'Armentera"], "43820": ["Calafell"], "43830": ["Torredembarra"], "43839": ["Creixell"], "43840": ["Salou"], "43850": ["Cambrils"], "43860": ["L'Ametlla de Mar"], "43870": ["Amposta"], "43877": ["Sant Jaume d'Enveja"], "43878": ["Masdenverge"], "43879": ["Amposta", "Sant Jaume d'Enveja"], "43880": ["El Vendrell"], "43881": ["Cunit"], "43882": ["Calafell"], "43883": ["Roda de Berà"], "43884": ["Bonastre"], "43885": ["Salomó"], "43886": ["Renau", "Vilabella"], "43887": ["Nulles"], "43890": ["Vandellòs i l'Hospitalet de l'Infant"], "43891": ["Vandellòs i l'Hospitalet de l'Infant"], "43892": ["Mont-roig del Camp"], "43893": ["Altafulla"], "43894": ["Camarles"], "43895": ["L'Ampolla"], "43896": ["L'Aldea"], "43897": ["Tortosa"], "99998": ["No consta"], "99999": ["Altres/Diversos"]};
+
+const nom = document.getElementById("nom");
+const telefon = document.getElementById("telefon");
+const cp = document.getElementById("cp");
+const municipi = document.getElementById("municipi");
+const enviar = document.getElementById("enviar");
+const missatge = document.getElementById("missatge");
+const successOverlay = document.getElementById("successOverlay");
+
+function nomValid(valor) {
+  return valor.trim().length >= 2;
+}
+
+function telefonValid(valor) {
+  let digits = valor.replace(/\D/g, "");
+  if (digits.startsWith("34") && digits.length === 11) {
+    digits = digits.slice(2);
+  }
+  return digits.length === 9 && /^[6789]/.test(digits);
+}
+
+function cpExisteix(valor) {
+  return /^\d{5}$/.test(valor) && !!dadesCP[valor];
+}
+
+function resetMunicipi(text = "S’obtindrà automàticament") {
+  municipi.innerHTML = "";
+  const op = document.createElement("option");
+  op.value = "";
+  op.textContent = text;
+  municipi.appendChild(op);
+  municipi.disabled = true;
+  municipi.classList.remove("valid","invalid");
+}
+
+function actualitzarMunicipi() {
+  const valorCP = cp.value.replace(/\D/g, "").slice(0,5);
+  cp.value = valorCP;
+
+  if (!valorCP) {
+    resetMunicipi();
+    return;
+  }
+
+  if (valorCP.length < 5) {
+    resetMunicipi("Escriu els 5 dígits");
+    return;
+  }
+
+  const llista = dadesCP[valorCP];
+
+  if (!llista) {
+    resetMunicipi("CP no trobat");
+    municipi.classList.add("invalid");
+    return;
+  }
+
+  municipi.innerHTML = "";
+
+  if (llista.length === 1) {
+    const op = document.createElement("option");
+    op.value = llista[0];
+    op.textContent = llista[0];
+    municipi.appendChild(op);
+    municipi.disabled = true;
+    municipi.classList.add("valid");
+  } else {
+    const ph = document.createElement("option");
+    ph.value = "";
+    ph.textContent = "Selecciona municipi...";
+    ph.selected = true;
+    ph.disabled = true;
+    municipi.appendChild(ph);
+
+    llista.forEach(m => {
+      const op = document.createElement("option");
+      op.value = m;
+      op.textContent = m;
+      municipi.appendChild(op);
+    });
+
+    municipi.disabled = false;
+    municipi.classList.add("invalid");
+  }
+}
+
+function obtenirErrors() {
+  const errors = [];
+  const okCP = cpExisteix(cp.value);
+
+  if (!nomValid(nom.value)) {
+    errors.push("falta el nom");
+  }
+
+  if (!telefonValid(telefon.value)) {
+    errors.push("el telèfon no és vàlid");
+  }
+
+  if (cp.value.trim().length === 0) {
+    errors.push("falta el codi postal");
+  } else if (cp.value.trim().length < 5) {
+    errors.push("el codi postal ha de tenir 5 dígits");
+  } else if (!okCP) {
+    errors.push("el codi postal no consta a la base");
+  }
+
+  if (okCP && !municipi.value) {
+    errors.push("has de seleccionar el municipi");
+  }
+
+  return errors;
+}
+
+function validar() {
+  const okNom = nomValid(nom.value);
+  const okTel = telefonValid(telefon.value);
+  const okCP = cpExisteix(cp.value);
+  const okMunicipi = !!municipi.value;
+
+  nom.classList.toggle("valid", okNom);
+  nom.classList.toggle("invalid", nom.value.length > 0 && !okNom);
+
+  telefon.classList.toggle("valid", okTel);
+  telefon.classList.toggle("invalid", telefon.value.length > 0 && !okTel);
+
+  cp.classList.toggle("valid", okCP);
+  cp.classList.toggle("invalid", cp.value.length === 5 && !okCP);
+
+  municipi.classList.toggle("valid", okMunicipi);
+  municipi.classList.toggle("invalid", okCP && !okMunicipi);
+
+  const errors = obtenirErrors();
+
+  if (errors.length === 0) {
+    missatge.textContent = "Dades validades. Ja pots enviar.";
+    missatge.className = "message ok";
+    enviar.classList.remove("disabled");
+  } else {
+    missatge.textContent = "No es pot enviar: " + errors.join(", ") + ".";
+    missatge.className = "message error";
+    enviar.classList.add("disabled");
+  }
+
+  return errors.length === 0;
+}
+
+function posarAZero() {
+  nom.value = "";
+  telefon.value = "";
+  cp.value = "";
+  resetMunicipi();
+  [nom, telefon, cp, municipi].forEach(el => el.classList.remove("valid","invalid"));
+  enviar.classList.add("disabled");
+  missatge.textContent = "Introdueix el nom, el telèfon i el codi postal.";
+  missatge.className = "message";
+}
+
+function enviarFormulari() {
+  const municipiSeleccionat = municipi.value;
+
+  actualitzarMunicipi();
+
+  if (municipiSeleccionat) {
+    for (let i = 0; i < municipi.options.length; i++) {
+      if (municipi.options[i].value === municipiSeleccionat) {
+        municipi.selectedIndex = i;
+        break;
+      }
+    }
+  }
+
+  const correcte = validar();
+
+  if (!correcte) {
+    return;
+  }
+
+  successOverlay.style.display = "flex";
+
+  setTimeout(() => {
+    successOverlay.style.display = "none";
+    posarAZero();
+  }, 3000);
+}
+
+[nom, telefon, cp, municipi].forEach(el => {
+  el.addEventListener("input", () => {
+    if (el === cp) actualitzarMunicipi();
+    validar();
+  });
+  el.addEventListener("change", () => {
+    validar();
+  });
+  el.addEventListener("keyup", () => {
+    if (el === cp) actualitzarMunicipi();
+    validar();
+  });
+});
+
+enviar.addEventListener("click", enviarFormulari);
+
+resetMunicipi();
+validar();
+</script>
+</body>
+</html>
